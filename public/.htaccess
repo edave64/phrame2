@@ -1,0 +1,14 @@
+# ETag (in there default configuration) often cause trouble and waste bytes. 
+Header unset ETag
+FileETag None
+
+# Set a far future expiration date
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresDefault "access plus 1 year"
+</IfModule>
+
+# Disable support for php-files (So that uploaded files will not be executable)
+RemoveHandler .php .phtml .php3 .php4 .php5
+RemoveType .php .phtml .php3 .php4 .php5
+php_flag engine off
