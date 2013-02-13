@@ -19,7 +19,7 @@ if ($conf_env['error page']) {
   
   function error_handler($errorType, $message) {
     if ($errorType != E_NOTICE) {
-      call_phrame_exception($message);
+      call_phrame_exception(new Exception($message));
     }
   }
   set_error_handler('error_handler');
