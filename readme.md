@@ -1,4 +1,4 @@
-Phrame2 alpha1
+Phrame2 alpha2
 ==============
 
 Phrame is a simple PHP-MVC-framework. This means it divides an application into three parts:
@@ -26,9 +26,8 @@ For `render`, see [Views](#Views).
 Models are also defined as classes. This class describes the layout of the table, and function for accessing data.
 
     class Page extends Model {
-      static $tableName = 'pages';
+      static $table_name = 'pages';
       static $index = array('name');
-      static $result;
       static $struct = array(
           'name'        => 'string',
           'content'     => 'text',
@@ -119,8 +118,8 @@ Phrame has several features aim to make your application more secure
 - All standart folders, except /phrame are hidden using `.htaccess`
 - The database adapter automaticly sanatizes the input to prevent SQL-Injections
 - The public folder uses `.htaccess` to delete the php file handler. That way, uploaded files cannot be executed
+- Protection against CSRF
 
 This features are TODO:
 
 - A better way of sanatizing HTML-Input then `htmlentities`
-- Protection against CSRF
