@@ -26,7 +26,7 @@ class Phrame {
   var $page;
 
   function  __construct() {
-    global $config;
+    global $conf_env;
     global $phrame;
     $phrame = $this;
     
@@ -51,7 +51,7 @@ class Phrame {
                       'action'     => $e->action);
         $call = array_merge($call, $e->data);
       }
-    } while ($internal_redirect && $redirect_count <= $config['max internal redirects']);
+    } while ($internal_redirect && $redirect_count <= $conf_env['max internal redirects']);
   }
 }
 ?>
