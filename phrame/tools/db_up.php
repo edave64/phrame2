@@ -29,6 +29,6 @@ require_once '../model.php';
 foreach (glob('../../models/*.php') as $file) {
     print '<p>'.$file.'</p>';
     require_once $file;
-    eval(basename($file, '.php').'::setup();');
+    eval(basename($file, '.php').'::setup("");');
 }
 ?>
