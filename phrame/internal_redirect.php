@@ -6,7 +6,7 @@ class Internal_Redirect extends Exception {
     var $action;
     var $data;
     
-    function  __construct($controller, $action, $data) {
+    function  __construct($controller, $action, $data = array()) {
         $this->controller = $controller;
         $this->action = $action;
         $this->data = $data;
