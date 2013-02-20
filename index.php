@@ -1,4 +1,10 @@
 <?php
+// Contains the path to the index.php
+define('INDEXFILE', $_SERVER['SCRIPT_NAME']);
+
+// Contains the path to the phrame root directory.
+define('ROOTDIR', implode('/', array_slice(explode('/',INDEXFILE), 0, -1)).'/');
+
 session_start(); //Initialize session
 
 // Load all config file
@@ -19,7 +25,7 @@ if ($conf_env['error page']) {
   
   function error_handler($errorType, $message) {
     if ($errorType != E_NOTICE) {
-      call_phrame_exception(new Exception($message));
+      call_phrame_exception(new Exception('Error: '.$message));
     }
   }
   set_error_handler('error_handler');
