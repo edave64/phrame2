@@ -10,8 +10,12 @@ class controller {
   function action ($name, $data) {
     $this->action = $name;
     $this->data   = $data;
+    $this->before();
     call_user_func(array($this, $this->action)); // PHP is weird
   }
+  
+  // Overwrite this method to define code that is executed before every action.
+  function before () {}
   
   function params ($name) {
     if ($this->data[$name]) return $this->data[$name];
@@ -22,14 +26,14 @@ class controller {
   function scripts () {
     $return = "";
     foreach($this->scripts as $script)
-      $return .= '<script type="application/javascript" src="'.$script.'"></script>';
+      $return .= '<script type="application/javascript" src="'.ROOTDIR.$script.'"></script>';
     return $return;
   }
 
   function styles () {
     $return = "";
     foreach($this->styles as $style)
-      $return .= '<link rel="stylesheet" type="text/css" href="'.$style.'" />'."\n        ";
+      $return .= '<link rel="stylesheet" type="text/css" href="'.ROOTDIR.$style.'" />'."\n        ";
     return $return;
   }
 
@@ -37,7 +41,7 @@ class controller {
   // HTTP redirect.
   // NOTE: This stops the current action!
   function internalRedirect ($controller, $action, $data) {
-    throw new Internal_Redirect ($data);
+    throw new Internal_Redirect ($controller, $action, $data);
   }
 
   // Performs a HTTP redirect and stops execution imidiatly
@@ -118,8 +122,42 @@ class controller {
   }
   
   function response_time () {
-      global $brain;
-		return round((microtime(true) - $brain->startTime) * 1000, 2);
-	}
+    global $phrame;
+    return round((microtime(true) - $phrame->startTime) * 1000, 2);
+  }
+  
+  // Generates a new cross site request forgery protection token, stores it
+  // inside of $_SESSION and prints a html sniplet for a hidden input field
+  // to include inside of the view
+  //
+  // Example (view):
+  //  <form action="/user/1" method="post">
+  //    <input type="hidden" name="_method" value="delete">
+  //    <?php $this->csrfToken() ? >
+  //  </form>
+  // 
+  // Example (controller):
+  //  function destroy () {
+  //    $this->csrfCheck();
+  //    // ... some code ...
+  //  }
+  //
+  function csrfToken () {
+    $token = $this->generateToken();
+    $_SESSION['last_csrf_token'] = $token;
+    echo '<input type="hidden" name="csrf_token" value="'.$token.'" />';
+  }
+  
+  // Checks if a given Cross Site Request Forgery protection token valid. If not,
+  // it raises an exception
+  function csrfCheck () {
+    if ($_SESSION['last_csrf_token'] && $_SESSION['last_csrf_token'] !== $_REQUEST['csrf_token'])
+      new Exception ('CSRF-Error: last stored token does not match the one in the request');
+  }
+  
+  // Generates token used in csrfToken
+  private function generateToken () {
+    return str_shuffle(md5(rand()));
+  }
 }
 ?>
